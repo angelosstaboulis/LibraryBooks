@@ -9,7 +9,6 @@ import SwiftUI
 import CoreData
 struct FindBook: View {
     @Environment(\.managedObjectContext) var viewContext
-    var booksArray = NSFetchRequest<NSFetchRequestResult>(entityName: "Book")
     @State var newBookArray:[NSFetchRequestResult] = []
     @State var findBook:String
     @State var newBook:BookModel
@@ -55,22 +54,7 @@ struct FindBook: View {
         }
     }
     func search(){
-        do{
-            self.newBookArray = try viewContext.fetch(booksArray)
-            for book in newBookArray {
-                var tempbook = book as! Book
-                if tempbook.isbn!.elementsEqual(findBook){
-                    newBook.title = tempbook.title!
-                    newBook.isbn = tempbook.isbn!
-                    newBook.pubDate = tempbook.pubDate!
-                    newBook.author = tempbook.author!
-                    break
-                }
-               
-            }
-        }catch{
-            debugPrint("something went wrong!!")
-        }
+        newBook = DBHelper.shared.search(findBook: findBook, viewContext: viewContext)
     }
 }
 

@@ -9,7 +9,6 @@ import SwiftUI
 import CoreData
 struct DeleteBook: View {
     @Environment(\.managedObjectContext) var viewContext
-    var booksArray = NSFetchRequest<NSFetchRequestResult>(entityName:"Book")
     @State var newBookArray:[NSFetchRequestResult] = []
     @State var findBook:String
     @State var newBook:BookModel
@@ -61,31 +60,10 @@ struct DeleteBook: View {
         }
     }
     func deleteRecord(){
-            let objects = self.newBookArray as? [NSManagedObject]
-            for book in objects! {
-                let tempbook = book as! Book
-                if tempbook.isbn!.elementsEqual(findBook){
-                    viewContext.delete(tempbook)
-                    break
-                }
-            }
+        DBHelper.shared.deleteRecord(findBook: findBook, viewContext: viewContext)
     }
     func search(){
-        do{
-            self.newBookArray = try viewContext.fetch(booksArray)
-            for book in newBookArray {
-                let tempbook = book as! Book
-                if tempbook.isbn!.elementsEqual(findBook){
-                    newBook.title = tempbook.title!
-                    newBook.isbn = tempbook.isbn!
-                    newBook.pubDate = tempbook.pubDate!
-                    newBook.author = tempbook.author!
-                    break
-                }
-            }
-        }catch{
-            debugPrint("something went wrong!!")
-        }
+        newBook = DBHelper.shared.search(findBook: findBook, viewContext: viewContext)
     }
 }
 

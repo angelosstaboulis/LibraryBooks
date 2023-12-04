@@ -38,24 +38,13 @@ struct AddBook: View {
             .padding(30)
             Spacer()
             Button(action: {
-                saveBook()
+                DBHelper.shared.saveBook(book: book, viewContext: viewContext)
             }, label: {
                 Text("Save Record")
             })
         }
     }
-    func saveBook(){
-        do{
-            let item = Book(context: viewContext)
-            item.title = book.title
-            item.isbn = book.isbn
-            item.author = book.author
-            item.pubDate = book.pubDate
-            try viewContext.save()
-        }catch{
-            debugPrint("something went wrong!!!")
-        }
-    }
+    
 }
 
 
